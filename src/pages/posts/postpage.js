@@ -7,7 +7,7 @@ import {
     Link
   } from "react-router-dom";
 
-const Posts = () => {
+const PostPage = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     const [listPost, setListPost] = useState([]);
@@ -124,4 +124,4 @@ const Posts = () => {
         </div>
     )
 }
-export default Posts;
+export default PostPage;

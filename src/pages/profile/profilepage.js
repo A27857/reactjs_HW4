@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-const Profile = () => 
+const ProfilePage = () => 
 {
     useEffect(() => {
         document.title = "Profile Page"
@@ -12,4 +12,4 @@ const Profile = () =>
         </div>
     )
 }
-export default Profile;
+export default ProfilePage;

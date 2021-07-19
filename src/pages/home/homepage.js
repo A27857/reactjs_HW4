@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-const Home = () => 
+const HomePage = () => 
 {
     useEffect(() => {
         document.title = "Home Page"
@@ -12,4 +12,4 @@ const Home = () =>
         </div>
     )
 }
-export default Home;
+export default HomePage;

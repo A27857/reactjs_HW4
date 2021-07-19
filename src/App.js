@@ -1,8 +1,9 @@
 import React from "react";
-import Home from "./pages/home/home";
-import Login from "./pages/login/login";
-import Profile from "./pages/profile/profile";
-import Posts from "./pages/posts/post";
+import HomePage from "./pages/home/homepage";
+import LoginPage from "./pages/login/loginpage";
+import ProfilePage from "./pages/profile/profilepage";
+import PostPage from "./pages/posts/postpage";
+import DetailPostPage from "./pages/posts/detailpostpage";
 import "./App.css"
 import {
   BrowserRouter as Router,
@@ -10,7 +11,8 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import DetailPost from "./pages/posts/detailpost";
+import SignUpPage from "./pages/register/signuppage";
+
 
 export default function App() {
   return (
@@ -35,21 +37,24 @@ export default function App() {
 
         <Switch>
           <Route path="/home">
-            <Home />
+            <HomePage />
           </Route>
           <Route path="/posts" exact>
-            <Posts />
+            <PostPage />
           </Route>
           <Route path="/profile">
-            <Profile />
+            <ProfilePage />
           </Route>
           <Route path="/login">
-            <Login />
+            <LoginPage />
           </Route>
           <Route path="/detail/:id">
-            <DetailPost />
+            <DetailPostPage />
           </Route>
         </Switch>
+        <Route path="/signup/">
+            <SignUpPage />
+          </Route>
       </div>
     </Router>
 

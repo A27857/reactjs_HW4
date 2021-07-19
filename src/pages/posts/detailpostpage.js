@@ -1,13 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {useParams} from "react-router-dom"
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link
-} from "react-router-dom";
-const DetailPost = () => {
+
+const DetailPostPage = () => {
 
     const [isLoading, setIsLoading] = useState(true);
 
@@ -61,4 +56,4 @@ const DetailPost = () => {
 
     )
 }
-export default DetailPost;
+export default DetailPostPage;
