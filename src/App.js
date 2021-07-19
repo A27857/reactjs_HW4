@@ -10,7 +10,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import PostDetail from "./pages/posts/postdetail";
+import DetailPost from "./pages/posts/detailpost";
 
 export default function App() {
   return (
@@ -33,8 +33,6 @@ export default function App() {
           </ul>
         </nav>
 
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
         <Switch>
           <Route path="/home">
             <Home />
@@ -48,13 +46,12 @@ export default function App() {
           <Route path="/login">
             <Login />
           </Route>
-          <Route path="/posts/">
-          <PostDetail></PostDetail>
+          <Route path="/detail/:id">
+            <DetailPost />
           </Route>
         </Switch>
       </div>
-      
     </Router>
-    
+
   );
 }

@@ -1,6 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import PostDetail from "./postdetail";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+  } from "react-router-dom";
 
 const Posts = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -18,7 +23,7 @@ const Posts = () => {
     //call API
     useEffect(() => {
         setIsLoading(true);
-        axios.get(`https://jsonplaceholder.typicode.com/posts`)
+        axios.get(`https://jsonplaceholder.typicode.com/posts/`)
             .then(respone => {
                 console.log(respone);
                 setIsLoading(false);
@@ -42,6 +47,13 @@ const Posts = () => {
     //     return 0;
 
     // }) : ListPostFilter;
+    // const handleViewDetail = () => {
+    //     return (
+    //         <div>
+    //             {listPost.data}
+    //         </div>
+    //     )
+    // }
 
     const SortToChangeTitle = () => {
         if (isSortByTitle === "Title -- Sort (NONE)") {
@@ -101,7 +113,7 @@ const Posts = () => {
                                     <td>{listPost.id}</td>
                                     <td>{listPost.title}</td>
                                     <td style={{ textAlign: "center" }}>
-                                        <a href={`posts/${listPost.id}`}>View detail</a>
+                                        <Link to={`detail/${listPost.id}`}>View Detail</Link>
                                     </td>
                                 </tr>
                             ))
