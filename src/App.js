@@ -5,6 +5,7 @@ import ProfilePage from "./pages/profile/profilepage";
 import PostPage from "./pages/posts/postpage";
 import DetailPostPage from "./pages/posts/detailpostpage";
 import "./App.css"
+import { useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -12,9 +13,16 @@ import {
   Link
 } from "react-router-dom";
 import SignUpPage from "./pages/register/signuppage";
+import { set } from "lodash";
 
 
 export default function App() {
+  //all route compodent can be use currentUsers and setCurrentUsers
+  // save token is a state. have another choice is save token on localstorage
+  const [currentUsers, setCurrentUsers] = useState({
+    token: null,
+    userId: null
+  })
   return (
     <Router>
       <div>
@@ -42,19 +50,34 @@ export default function App() {
           <Route path="/posts" exact>
             <PostPage />
           </Route>
-          <Route path="/profile">
-            <ProfilePage />
-          </Route>
+          <Route path="/profile"
+            render={() => {
+              if (currentUsers.userId === null) {
+                return <LoginPage
+                  setCurrentUsers={setCurrentUsers}
+                  currentUsers={currentUsers}
+                  title = "You must to login before use this page!"
+                />
+              }
+              else {
+                return <ProfilePage
+                currentUsers = {currentUsers}
+                />
+              }
+            }}></Route>
           <Route path="/login">
-            <LoginPage />
+            <LoginPage
+              currentUsers={currentUsers}
+              setCurrentUsers={setCurrentUsers}
+            />
           </Route>
           <Route path="/detail/:id">
             <DetailPostPage />
           </Route>
         </Switch>
         <Route path="/signup/">
-            <SignUpPage />
-          </Route>
+          <SignUpPage />
+        </Route>
       </div>
     </Router>
 

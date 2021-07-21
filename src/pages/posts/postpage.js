@@ -71,7 +71,6 @@ const PostPage = () => {
             //listPost.filter(post => post.title.toLowerCase().includes(searchText.toLowerCase()));
         }
     }
-
     // const openTabDetail = () => {
     //     window.open(`https://jsonplaceholder.typicode.com/posts/${listPost.id}`);
     //     return (

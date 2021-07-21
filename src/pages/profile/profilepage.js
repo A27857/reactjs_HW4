@@ -1,14 +1,51 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-const ProfilePage = () => 
-{
+import LoginPage from "../login/loginpage";
+const ProfilePage = ({ currentUsers }) => {
     useEffect(() => {
         document.title = "Profile Page"
     }, []);
 
+    //Check nếu chưa login => render ra page login
+    // const isLogin = currentUsers.token !=null;
+    // if(!isLogin)
+    // {
+    //     return <LoginPage></LoginPage>
+    // }
+    const [profile, setProfile] = useState({
+        name: '',
+        id: null,
+        creatAt: null
+    })
+
+    //Header, after login => profile page, need send to token -> web
+    useEffect(() => {
+        let didCancel = false;
+        axios.get(`https://60dff0ba6b689e001788c858.mockapi.io/users/${currentUsers.userId}`).then
+            (respone => {
+                if (!didCancel) {
+                    setProfile({
+                        name: respone.data.name,
+                        id: respone.data.id,
+                        creatAt: respone.data.creatAt
+                    })
+                }
+            });
+        return () => didCancel = true;
+    }, [currentUsers.userId, currentUsers.token]);
+
     return (
         <div>
-            <h3>Profile</h3>
+            <h3>Login success {currentUsers.token != null ? "yes" : "no"}</h3>
+            <div>
+                {profile.id}
+            </div>
+            <div>
+                {profile.name}
+            </div>
+            <div>
+                {profile.creatAt}
+            </div>
         </div>
     )
 }

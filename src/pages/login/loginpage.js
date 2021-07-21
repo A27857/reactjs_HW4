@@ -1,271 +1,108 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { Formik } from "formik";
+import * as EmailValidator from "email-validator";
+import "./loginpage.css"
 import { Link } from "react-router-dom";
+import axios from "axios";
 
-// const validateEmail = email => {
-//     if (!email) {
-//         return "Required";
-//     }
-//     return;
-// }
+const LoginPage = ({currentUsers, setCurrentUsers, title}) => {
 
-// const validatePassword = password => {
-//     if (!password) {
-//         return "Required";
-//     }
-//     if (password.length < 8) {
-//         return "Password greater 8 characters"
-//     }
-//     return;
-// }
-
-// const LoginPage = () => {
-
-//     const [value, setValue] = useState({
-//         email: '',
-//         password: ''
-//     })
-
-//     const handleOnChange = evt => {
-//         const name = evt.target.name;
-//         console.log("name", name);
-//         setValue({
-//             ...value,
-//             [name]: evt.target.value
-//         })
-//     }
-
-//     const handleOnSubmit = evt => {
-//         evt.preventDefault();
-//     }
-
-//     const emailError = validateEmail(value.email);
-//     const passwordError = validatePassword(value.password);
-
-
-//     useEffect(() => {
-//         document.title = "Login Page"
-//     }, []);
-
-//     const[touch, setTouch] = useState ({
-//         email: false,
-//         password: false
-//     })
-
-//     const handleOnBlur = evt => {
-//         setTouch ({
-//             ...touch,
-//             [evt.target.name]: true
-//         })
-//     }
-
-//     const formValid = !emailError && !passwordError;
-
-//     return (
-//         <div className="login-form">
-
-//             <form onSubmit={handleOnSubmit}>
-//                 <div><input
-//                     type="text"
-//                     placeholder="email"
-//                     value={value.email}
-//                     onChange={handleOnChange}
-//                     onBlur={handleOnBlur}
-//                     name="email"
-//                 />
-//                  {touch.email && <p style={{color: "red"}}>{emailError}</p>}
-//                 </div>
-
-//                 <div>
-//                     <input
-//                         type="text"
-//                         placeholder="password"
-//                         value={value.password}
-//                         onChange={handleOnChange}
-//                         onBlur={handleOnBlur}
-//                         name="password"
-//                     />
-//                    {touch.password && <p style={{color: "red"}}>{passwordError}</p>} 
-//                 </div>
-//                 <button disabled = {!formValid} type="submit">Submit</button>
-//                 <Link to="/signup/" style={{margin: 15}}>Sign up</Link>
-//             </form>
-//         </div>
-
-//     )
-// }
-// export default LoginPage;
-  
-class LoginPage extends React.Component {
-    constructor() {
-    super();
-    this.state = {
-      input: {},
-      errors: {}
-    };
-     
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+  const onSubmit = (values, { setSubmitting }) => {
+    // setTimeout(() => {
+    //   console.log("Logging in", values);
+    //   setSubmitting(false);
+    // }, 500);
+    //khi submit, formik tự động set submit=true => sau khi submit chuyển setsubmitting=false
+    // setSubmitting(false);
+    console.log("value: ", values);
+    axios.get("https://60dff0ba6b689e001788c858.mockapi.io/token", {
+      email: values.email,
+      password: values.password
+    }).then(respone => {
+      setSubmitting(false);
+      setCurrentUsers({
+        token: respone.data.token,
+        userId: respone.data.userId
+      })
+      axios.defaults.headers.common['Authorization'] = respone.data.token;
+  })
   }
-     
-  handleChange(event) {
-    let input = this.state.input;
-    input[event.target.name] = event.target.value;
-  
-    this.setState({
-      input
-    });
-  }
-     
-  handleSubmit(event) {
-    event.preventDefault();
-  
-    if(this.validate()){
-        console.log(this.state);
-  
-        let input = {};
-        input["username"] = "";
-        input["email"] = "";
-        input["password"] = "";
-        input["confirm_password"] = "";
-        this.setState({input:input});
-  
-        alert('Demo Form is submitted');
+  console.log("currentUsers: ", currentUsers);
+
+  const initialValues = { email: "", password: "" }
+
+  const validate = values => {
+    let errors = {};
+    if (!values.email) {
+      errors.email = "Required";
+    } else if (!EmailValidator.validate(values.email)) {
+      errors.email = "Invalid email address.";
     }
+    const passwordRegex = /(?=.*[0-9])/;
+    if (!values.password) {
+      errors.password = "Required";
+    } else if (values.password.length < 8) {
+      errors.password = "Password must be 8 characters long.";
+    } else if (!passwordRegex.test(values.password)) {
+      errors.password = "Invalid password. Must contain one number.";
+    }
+    return errors;
   }
-  
-  validate(){
-      let input = this.state.input;
-      let errors = {};
-      let isValid = true;
-   
-      if (!input["username"]) {
-        isValid = false;
-        errors["username"] = "Please enter your username.";
-      }
-  
-      if (typeof input["username"] !== "undefined") {
-        const re = /^\S*$/;
-        if(input["username"].length < 6 || !re.test(input["username"])){
-            isValid = false;
-            errors["username"] = "Please enter valid username.";
+
+  return (
+    <div className="login-form">
+      < Formik
+        onSubmit={onSubmit}
+        initialValues={initialValues}
+        validate={validate}
+      >
+        {
+          ({
+            values,
+            touched,
+            errors,
+            isSubmitting,
+            handleChange,
+            handleBlur,
+            handleSubmit
+          }) => (
+            <form onSubmit={handleSubmit}>
+              <h3>Sign In</h3>
+              {title && <p style={{textAlign: "center"}}>{title}</p>}
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="text"
+                placeholder="Enter your email"
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.email && touched.email && "error"}
+              />
+              {errors.email && touched.email && (<div className="input-feedback">{errors.email}</div>)}
+
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.password && touched.password && "error"}
+              />
+              {errors.password && touched.password && (<div className="input-feedback">{errors.password}</div>)}
+              <button type="submit">
+                Login
+              </button>
+              <p>Don't have an account<Link to="/signup/" style={{ margin: 5 }}>sign up?</Link></p>
+            </form>
+          )
         }
-      }
-  
-      if (!input["email"]) {
-        isValid = false;
-        errors["email"] = "Please enter your email Address.";
-      }
-  
-      if (typeof input["email"] !== "undefined") {
-          
-        var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
-        if (!pattern.test(input["email"])) {
-          isValid = false;
-          errors["email"] = "Please enter valid email address.";
-        }
-      }
-  
-      if (!input["password"]) {
-        isValid = false;
-        errors["password"] = "Please enter your password.";
-      }
-  
-      if (!input["confirm_password"]) {
-        isValid = false;
-        errors["confirm_password"] = "Please enter your confirm password.";
-      }
-  
-      if (typeof input["password"] !== "undefined") {
-        if(input["password"].length < 6){
-            isValid = false;
-            errors["password"] = "Please add at least 6 charachter.";
-        }
-      }
-  
-      if (typeof input["password"] !== "undefined" && typeof input["confirm_password"] !== "undefined") {
-          
-        if (input["password"] != input["confirm_password"]) {
-          isValid = false;
-          errors["password"] = "Passwords don't match.";
-        }
-      }
-  
-      this.setState({
-        errors: errors
-      });
-  
-      return isValid;
-  }
-     
-  render() {
-    return (
-      <div>
-        <h3>Login</h3>
-        <form onSubmit={this.handleSubmit}>
-  
-          <div class="form-group">
-            <label for="username">Username:</label>
-            <input 
-              type="text" 
-              name="username" 
-              value={this.state.input.username}
-              onChange={this.handleChange}
-              class="form-control" 
-              placeholder="Enter username" 
-              id="username" />
-  
-              <div className="text-danger">{this.state.errors.username}</div>
-          </div>
-  
-          <div class="form-group">
-            <label for="email">Email Address:</label>
-            <input 
-              type="text" 
-              name="email" 
-              value={this.state.input.email}
-              onChange={this.handleChange}
-              class="form-control" 
-              placeholder="Enter email" 
-              id="email" />
-  
-              <div className="text-danger">{this.state.errors.email}</div>
-          </div>
-  
-          <div class="form-group">
-            <label for="password">Password:</label>
-            <input 
-              type="password" 
-              name="password" 
-              value={this.state.input.password}
-              onChange={this.handleChange}
-              class="form-control" 
-              placeholder="Enter password" 
-              id="password" />
-  
-              <div className="text-danger">{this.state.errors.password}</div>
-          </div>
-  
-          <div class="form-group">
-            <label for="password">Confirm Password:</label>
-            <input 
-              type="password" 
-              name="confirm_password" 
-              value={this.state.input.confirm_password}
-              onChange={this.handleChange}
-              class="form-control" 
-              placeholder="Enter confirm password" 
-              id="confirm_password" />
-  
-              <div className="text-danger">{this.state.errors.confirm_password}</div>
-          </div>
-             
-          <input type="submit" value="Submit" class="btn btn-success" />
-          <Link to="/signup/" style={{margin: 10}}>sign up?</Link>
-        </form>
-      </div>
-    );
-  }
-}
-  
+      </Formik >
+    </div>
+  )
+};
 export default LoginPage;
