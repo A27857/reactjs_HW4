@@ -7,8 +7,6 @@ import "./loginpage.css"
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-
-
 const LoginPage = ({ title }) => {
   const { currentUsers, setCurrentUsers } = useContext(CurrentUserContext);
 

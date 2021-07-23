@@ -15,7 +15,6 @@ import {
 import SignUpPage from "./pages/register/signuppage";
 import CurrentUserContext from "./contexts/CurrentUserContext";
 
-
 export default function App() {
   //all route compodent can be use currentUsers and setCurrentUsers
   // save token is a state. have another choice is save token on localstorage
@@ -44,7 +43,6 @@ export default function App() {
                 <Link className="w3-bar-item w3-button" to="/home">Home</Link>
           
                 <Link className="w3-bar-item w3-button" to="/posts">Posts</Link>
-          
          
                 <Link className="w3-bar-item w3-button" to="/profile">Profile</Link>
         
@@ -54,16 +52,15 @@ export default function App() {
                   hidden={false}>
                   Login
                 </Link>
+
                 <Link
                   id="logout"
                   hidden={true}
                   onClick={handleLogout}>
                   Logout
                 </Link>
-
             </div>
           </nav>
-
           <Switch>
             <Route path="/home">
               <HomePage />
@@ -94,6 +91,5 @@ export default function App() {
         </div>
       </CurrentUserContext.Provider>
     </Router>
-
   );
 }
