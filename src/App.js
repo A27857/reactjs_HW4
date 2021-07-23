@@ -13,7 +13,7 @@ import {
   Link
 } from "react-router-dom";
 import SignUpPage from "./pages/register/signuppage";
-import { set } from "lodash";
+import CurrentUserContext from "./contexts/CurrentUserContext";
 
 
 export default function App() {
@@ -23,62 +23,76 @@ export default function App() {
     token: null,
     userId: null
   })
+
+  const handleLogout = () => {
+    setCurrentUsers ({
+      token: null,
+      userId: null
+    })
+    document.location.href="/login";
+  }
+
+  const [language, setLanguage] = useState('vi');
+
   return (
     <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/home">Home</Link>
-            </li>
-            <li>
-              <Link to="/posts">Posts</Link>
-            </li>
-            <li>
-              <Link to="/profile">Profile</Link>
-            </li>
-            <li>
-              <Link to="/login">Login</Link>
-            </li>
-          </ul>
-        </nav>
+      <CurrentUserContext.Provider value={{ currentUsers, setCurrentUsers }}>
+        <div>
+          <nav>
+            <div className="w3-bar w3-blue">
+          
+                <Link className="w3-bar-item w3-button" to="/home">Home</Link>
+          
+                <Link className="w3-bar-item w3-button" to="/posts">Posts</Link>
+          
+         
+                <Link className="w3-bar-item w3-button" to="/profile">Profile</Link>
+        
+                <Link className="w3-bar-item w3-button"
+                  to="/login"
+                  id="login"
+                  hidden={false}>
+                  Login
+                </Link>
+                <Link
+                  id="logout"
+                  hidden={true}
+                  onClick={handleLogout}>
+                  Logout
+                </Link>
 
-        <Switch>
-          <Route path="/home">
-            <HomePage />
+            </div>
+          </nav>
+
+          <Switch>
+            <Route path="/home">
+              <HomePage />
+            </Route>
+            <Route path="/posts" exact>
+              <PostPage />
+            </Route>
+            <Route path="/profile"
+              render={() => {
+                if (currentUsers.userId === null) {
+                  return <LoginPage title="You must to login before use this page!" />
+                }
+                else {
+                  return <ProfilePage />
+                }
+              }}></Route>
+            <Route path="/login">
+              <LoginPage
+              />
+            </Route>
+            <Route path="/detail/:id">
+              <DetailPostPage />
+            </Route>
+          </Switch>
+          <Route path="/signup/">
+            <SignUpPage />
           </Route>
-          <Route path="/posts" exact>
-            <PostPage />
-          </Route>
-          <Route path="/profile"
-            render={() => {
-              if (currentUsers.userId === null) {
-                return <LoginPage
-                  setCurrentUsers={setCurrentUsers}
-                  currentUsers={currentUsers}
-                  title = "You must to login before use this page!"
-                />
-              }
-              else {
-                return <ProfilePage
-                currentUsers = {currentUsers}
-                />
-              }
-            }}></Route>
-          <Route path="/login">
-            <LoginPage
-              currentUsers={currentUsers}
-              setCurrentUsers={setCurrentUsers}
-            />
-          </Route>
-          <Route path="/detail/:id">
-            <DetailPostPage />
-          </Route>
-        </Switch>
-        <Route path="/signup/">
-          <SignUpPage />
-        </Route>
-      </div>
+        </div>
+      </CurrentUserContext.Provider>
     </Router>
 
   );

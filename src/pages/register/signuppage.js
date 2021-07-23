@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Checkbox from "antd/lib/checkbox/Checkbox";
 import { validate } from "email-validator";
+import { bool } from "yup";
 
 const SignUpPage = () => {
 
@@ -51,9 +52,9 @@ const SignUpPage = () => {
         }
     }
 
-    const validateEmail = evt => {
+    const validateEmail = email => {
         var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(evt);
+        return re.test(email);
     };
 
     const passwordRegex = /(?=.*[0-9])/;
@@ -102,7 +103,7 @@ const SignUpPage = () => {
                         onBlur={handleOnBlur}
                         name="userName"
                     />
-                    <p>{touch.userName && <p style={{ color: "red" }}>{userNameError}</p>}</p>
+                    {touch.userName && (<div className="input-feedback" style={{ color: "red" }}>{userNameError}</div>)}
                 </div>
 
                 <div className="form-group">
@@ -115,11 +116,11 @@ const SignUpPage = () => {
                         onBlur={handleOnBlur}
                         name="email"
                     />
-                    <p>{touch.email && <p style={{ color: "red" }}>{emailError}</p>}</p>
+                    {touch.email && (<div className="input-feedback" style={{ color: "red" }}>{emailError}</div>)}
                 </div>
 
                 <div>
-                    <label for="gender">Choose your gender:</label>
+                    <label for="gender">Choose your gender: </label>
                     <select name="gender" id="gender">
                         <option value="male">Male</option>
                         <option value="female">Female</option>
@@ -138,26 +139,26 @@ const SignUpPage = () => {
                         onBlur={handleOnBlur}
                         name="password"
                     />
-                    <p>{touch.password && <p style={{ color: "red" }}>{passwordError}</p>}</p>
+                    {touch.password && (<div className="input-feedback" style={{ color: "red" }}>{passwordError}</div>)}
                 </div>
 
                 <div className="form-group">
                     <label>Confirm Password</label>
                     <input type="password"
-                        className="form-control"
+                        // className="form-control"
                         placeholder="Enter confirm password"
                         value={value.confirmPassword}
                         onChange={handleOnChange}
                         onBlur={handleOnBlur}
                         name="confirmPassword"
                     />
-                    <p>{touch.confirmPassword && <p style={{ color: "red" }}>{confirmPasswordError}</p>}</p>
+                    {touch.confirmPassword && (<div className="input-feedback" style={{ color: "red" }}>{confirmPasswordError}</div>)}
                 </div>
+                <div>
+                    <input style={{ width: 30, height: 20}} className="agree" type="checkbox" id="agree" name="agree" value="accept"></input>
+                    <label style ={{marginBottom: 200}} className="agree" for="agree">I have read agreement</label>
 
-                <label for="agree">I have read agreement</label>
-
-                <input className="input-agree" type="checkbox" id="agree" name="agree" value="accept"></input>
-
+                </div>
                 <button
                     type="submit"
                     className="btn btn-primary btn-block"
@@ -167,7 +168,7 @@ const SignUpPage = () => {
                 </button>
 
                 <div className="forgot-password text-right">
-                    Already registered<Link to="/login" style={{ margin: 5 }}>sign in?</Link>
+                    Already registered<Link to="/login" style={{ margin: 5, color: "blue" }}>sign in?</Link>
                 </div>
             </form>
         </div>

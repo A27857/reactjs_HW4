@@ -1,7 +1,8 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import CurrentUserContext from "../../contexts/CurrentUserContext";
 import LoginPage from "../login/loginpage";
-const ProfilePage = ({ currentUsers }) => {
+const ProfilePage = () => {
     useEffect(() => {
         document.title = "Profile Page"
     }, []);
@@ -12,10 +13,12 @@ const ProfilePage = ({ currentUsers }) => {
     // {
     //     return <LoginPage></LoginPage>
     // }
+
+    const {currentUsers} = useContext(CurrentUserContext);
+
     const [profile, setProfile] = useState({
         name: '',
         id: null,
-        creatAt: null
     })
 
     //Header, after login => profile page, need send to token -> web
@@ -27,7 +30,6 @@ const ProfilePage = ({ currentUsers }) => {
                     setProfile({
                         name: respone.data.name,
                         id: respone.data.id,
-                        creatAt: respone.data.creatAt
                     })
                 }
             });
@@ -36,15 +38,12 @@ const ProfilePage = ({ currentUsers }) => {
 
     return (
         <div>
-            <h3>Login success {currentUsers.token != null ? "yes" : "no"}</h3>
+            {/* <h3>Login success {currentUsers.token != null ? "yes" : "no"}</h3> */}
             <div>
                 {profile.id}
             </div>
             <div>
                 {profile.name}
-            </div>
-            <div>
-                {profile.creatAt}
             </div>
         </div>
     )

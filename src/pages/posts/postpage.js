@@ -5,7 +5,7 @@ import {
     Switch,
     Route,
     Link
-  } from "react-router-dom";
+} from "react-router-dom";
 
 const PostPage = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -92,12 +92,16 @@ const PostPage = () => {
         <div>
             <input placeholder="Search by title"
                 type="text"
-                style={{ margin: 15 }}
+                style={{
+                    margin: 15,
+                    width: 200
+                }}
                 value={searchText}
                 onChange={event => setSearchText(event.target.value)}></input>
             {ListPostFilter.length === 0 && <div style={{ backgroundColor: "red" }}>Not Found</div>}
             <div className="list-Post">
-                <table border="" style={{ width: "100%" }}>
+            {/* <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection /> */}
+                <table border="" style={{ width: "100%" }} className="w3-table-all w3-hoverable">
                     <thead>
                         <tr>
                             <th><b>ID</b></th>
@@ -109,7 +113,7 @@ const PostPage = () => {
                         {
                             ListPostFilter.map(listPost => (
                                 <tr key={listPost.id}>
-                                    <td>{listPost.id}</td>
+                                    <td style={{ textAlign: "center" }}>{listPost.id}</td>
                                     <td>{listPost.title}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <Link to={`detail/${listPost.id}`}>View Detail</Link>
@@ -123,4 +127,5 @@ const PostPage = () => {
         </div>
     )
 }
+
 export default PostPage;

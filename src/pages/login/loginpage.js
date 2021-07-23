@@ -1,11 +1,16 @@
 import React, { useState } from "react";
+import { useContext } from "react";
 import { Formik } from "formik";
 import * as EmailValidator from "email-validator";
+import CurrentUserContext from "../../contexts/CurrentUserContext";
 import "./loginpage.css"
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const LoginPage = ({currentUsers, setCurrentUsers, title}) => {
+
+
+const LoginPage = ({ title }) => {
+  const { currentUsers, setCurrentUsers } = useContext(CurrentUserContext);
 
   const onSubmit = (values, { setSubmitting }) => {
     // setTimeout(() => {
@@ -14,19 +19,28 @@ const LoginPage = ({currentUsers, setCurrentUsers, title}) => {
     // }, 500);
     //khi submit, formik tự động set submit=true => sau khi submit chuyển setsubmitting=false
     // setSubmitting(false);
+
     console.log("value: ", values);
     axios.get("https://60dff0ba6b689e001788c858.mockapi.io/token", {
       email: values.email,
       password: values.password
     }).then(respone => {
       setSubmitting(false);
+
       setCurrentUsers({
         token: respone.data.token,
         userId: respone.data.userId
+
       })
       axios.defaults.headers.common['Authorization'] = respone.data.token;
-  })
+      if (document.getElementById("login-success"))
+        document.getElementById("login-success").hidden = false;
+
+      document.getElementById("login").hidden = true;
+      document.getElementById("logout").hidden = false;
+    })
   }
+
   console.log("currentUsers: ", currentUsers);
 
   const initialValues = { email: "", password: "" }
@@ -67,8 +81,8 @@ const LoginPage = ({currentUsers, setCurrentUsers, title}) => {
             handleSubmit
           }) => (
             <form onSubmit={handleSubmit}>
-              <h3>Sign In</h3>
-              {title && <p style={{textAlign: "center"}}>{title}</p>}
+              <h3>Login</h3>
+              {title && <p style={{ textAlign: "center" }}>{title}</p>}
               <label htmlFor="email">Email</label>
               <input
                 id="email"
@@ -97,7 +111,11 @@ const LoginPage = ({currentUsers, setCurrentUsers, title}) => {
               <button type="submit">
                 Login
               </button>
-              <p>Don't have an account<Link to="/signup/" style={{ margin: 5 }}>sign up?</Link></p>
+              <h3 id="login-success"
+                hidden={true}
+                style={{ color: "green" }}>
+                Login success</h3>
+              <p>Don't have an account<Link to="/signup/" style={{ margin: 5, color: "blue" }}>sign up?</Link></p>
             </form>
           )
         }
